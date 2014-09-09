@@ -12,14 +12,15 @@
 class LLAPSerial
 {
  private:
-	char cMessage[13];
 	void processMessage();
+	HardwareSerial _Serial *;
  public:
 	void init();
 	void init(char* cI);
 	char deviceId[2];
 	String sMessage;
 	boolean bMsgReceived;
+	char cMessage[13];  // Nice to be able to access full received message
 	void SerialEvent();
     void sendMessage(String sToSend);
 	void sendMessage(char* sToSend);
