@@ -37,6 +37,7 @@ void LLAPSerial::init()
 	bMsgReceived = false;
 	deviceId[0] = '-';
 	deviceId[1] = '-';
+	_Serial = &Serial;
 }
 
 void LLAPSerial::init(char* dID)
@@ -53,13 +54,13 @@ void LLAPSerial::processMessage(){
 	if (cMessage[2] != deviceId[1]) return;
 	// now we have LLAP.cMessage[3] to LLAP.cMessage[11] as the actual message
 	if (0 == strncmp_P(&cMessage[3],PSTR("HELLO----"),9)) {
-		Serial.print(cMessage);	// echo the message
+		_Serial->print(cMessage);	// echo the message
 	} else if (0 == strncmp_P(&cMessage[3],PSTR("CHDEVID"),7)) {
 	  if (strchr_P(PSTR("-#@?\\*ABCDEFGHIJKLMNOPQRSTUVWXYZ"), cMessage[10]) != 0 && strchr_P(PSTR("-#@?\\*ABCDEFGHIJKLMNOPQRSTUVWXYZ"), cMessage[11]) != 0)
 	  {
 		deviceId[0] = cMessage[10];
 		deviceId[1] = cMessage[11];
-		Serial.print(cMessage);	// echo the message
+		_Serial->print(cMessage);	// echo the message
 	  }
 	} else {
 		sMessage = String(&cMessage[3]); // let the main program deal with it
@@ -70,14 +71,14 @@ void LLAPSerial::processMessage(){
 void LLAPSerial::SerialEvent()
 {
 	if (bMsgReceived) return; //get out if previous message not yet processed
-	if (Serial.available() >= 12) {
+	if (_Serial->available() >= 12) {
         // get the new byte:
-        char inChar = (char)Serial.peek();
+        char inChar = (char)_Serial->peek();
         if (inChar == 'a') {
             for (byte i = 0; i<12; i++) {
-                inChar = (char)Serial.read();
+                inChar = (char)_Serial->read();
                 cMessage[i] = inChar;
-                if (i < 11 && Serial.peek() == 'a') {
+                if (i < 11 && _Serial->peek() == 'a') {
                     // out of synch so abort and pick it up next time round
                     return;
                 }
@@ -86,7 +87,7 @@ void LLAPSerial::SerialEvent()
             processMessage();
         }
         else
-            Serial.read();	// throw away the character
+            _Serial->read();	// throw away the character
     }
 }
 
@@ -102,8 +103,8 @@ void LLAPSerial::sendMessage(String sToSend)
 			cMessage[i+3] = '-';
     }
     
-    Serial.print(cMessage);
-    Serial.flush();
+    _Serial->print(cMessage);
+    _Serial->flush();
 }
 
 void LLAPSerial::sendMessage(char* sToSend)
@@ -125,8 +126,8 @@ void LLAPSerial::sendMessage(char* sToSend, char* valueToSend)
 			cMessage[i+3] = '-';
     }
     
-    Serial.print(cMessage);
-    Serial.flush();
+    _Serial->print(cMessage);
+    _Serial->flush();
 }
 
 void LLAPSerial::sendMessage(const __FlashStringHelper *ifsh)
@@ -158,8 +159,8 @@ void LLAPSerial::sendMessage(const __FlashStringHelper *ifsh, char* valueToSend)
 				cMessage[i+3] = '-';
 		}
     }
-    Serial.print(cMessage);
-    Serial.flush();
+    _Serial->print(cMessage);
+    _Serial->flush();
 }
 
 void LLAPSerial::sendInt(String sToSend, int value)
@@ -180,8 +181,8 @@ void LLAPSerial::sendInt(String sToSend, int value)
 			cMessage[i+3] = '-';
     }
     
-    Serial.print(cMessage);
-    Serial.flush();
+    _Serial->print(cMessage);
+    _Serial->flush();
 }
 
 void LLAPSerial::sendIntWithDP(String sToSend, int value, byte decimalPlaces)
@@ -209,8 +210,8 @@ void LLAPSerial::sendIntWithDP(String sToSend, int value, byte decimalPlaces)
 			cMessage[i+3] = '-';
     }
     
-    Serial.print(cMessage);
-    Serial.flush();
+    _Serial->print(cMessage);
+    _Serial->flush();
 }
 
 void LLAPSerial::setDeviceId(char* cId)
