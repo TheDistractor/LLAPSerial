@@ -13,11 +13,12 @@ class LLAPSerial
 {
  private:
 	void processMessage();
-	HardwareSerial _Serial *;
+	HardwareSerial *_Serial;
+	boolean checkId;
  public:
-	void init();
-	void init(char* cI);
-	void init(HardwareSerial *serIn, char *cI);
+	//void init();
+	//void init(char* cI);
+	void init(HardwareSerial *serIn, char *cI, boolean checkIdIn);
 	char deviceId[2];
 	String sMessage;
 	boolean bMsgReceived;

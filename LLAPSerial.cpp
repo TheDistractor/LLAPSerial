@@ -32,14 +32,15 @@ const CTable __code Commands[] = {
 */
 
 // TODO: Clean up init functions
-
+/*
 void LLAPSerial::init()
 {
 	sMessage.reserve(10);
 	bMsgReceived = false;
 	deviceId[0] = '-';
 	deviceId[1] = '-';
-	_Serial = &Serial;
+	if (Serial) 
+	_Serial = Serial;
 }
 
 void LLAPSerial::init(char* dID)
@@ -49,11 +50,13 @@ void LLAPSerial::init(char* dID)
 	setDeviceId(dID);
 	cMessage[12]=0;		// ensure terminated
 }
+*/
 
-void LLAPSerial::init(HardwareSerial *serIn, char *dID )
+void LLAPSerial::init(HardwareSerial *serIn, char *dID, boolean checkIdIn )
 {
 	sMessage.reserve(10);
 	bMsgReceived = false;
+	checkId = checkIdIn;
 	setDeviceId(dID);
 	cMessage[12]=0;		// ensure terminated
 	//deviceId[0] = '-';
@@ -63,8 +66,10 @@ void LLAPSerial::init(HardwareSerial *serIn, char *dID )
 
 void LLAPSerial::processMessage(){
 	//if (LLAP.cMessage[0] != 'a') return; //not needed as already checked
-	if (cMessage[1] != deviceId[0]) return;
-	if (cMessage[2] != deviceId[1]) return;
+	if( checkId ) {
+	  if (cMessage[1] != deviceId[0]) return;
+	  if (cMessage[2] != deviceId[1]) return;
+	}
 	// now we have LLAP.cMessage[3] to LLAP.cMessage[11] as the actual message
 	if (0 == strncmp_P(&cMessage[3],PSTR("HELLO----"),9)) {
 		_Serial->print(cMessage);	// echo the message
@@ -381,10 +386,16 @@ void LLAPSerial::sleep(byte pinToWakeOn, byte direction, byte bPullup)	// full s
  time loop() runs, so using delay inside loop can delay
  response.  Multiple bytes of data may be available.
  */
+//#ifdef __AVR_ATmega328P__
 void serialEvent() {
 	LLAP.SerialEvent();
 }
+//#else
 
+void serialEvent1() {
+	LLAP.SerialEvent();
+}
+//#endif
 
 LLAPSerial LLAP;	// declare the instance
 
