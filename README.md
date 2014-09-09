@@ -1,4 +1,10 @@
 ** This is my customised version of the Ciseco LLAP Arduino library. **
+
+Changes:
+
+* Make Serial object a parameter passed to overloaded init() function.
+
+
 Original Readme:
 
 This Arduino library is under development, however feel free to try it out.
