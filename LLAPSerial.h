@@ -17,7 +17,7 @@ class LLAPSerial
  public:
 	void init();
 	void init(char* cI);
-	void init(HardwareSerial *serIn);
+	void init(HardwareSerial *serIn, char *cI);
 	char deviceId[2];
 	String sMessage;
 	boolean bMsgReceived;

@@ -50,12 +50,14 @@ void LLAPSerial::init(char* dID)
 	cMessage[12]=0;		// ensure terminated
 }
 
-void LLAPSerial::init(HardwareSerial *serIn )
+void LLAPSerial::init(HardwareSerial *serIn, char *dID )
 {
 	sMessage.reserve(10);
 	bMsgReceived = false;
-	deviceId[0] = '-';
-	deviceId[1] = '-';
+	setDeviceId(dID);
+	cMessage[12]=0;		// ensure terminated
+	//deviceId[0] = '-';
+	//deviceId[1] = '-';
 	_Serial = serIn;
 }
 
