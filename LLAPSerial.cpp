@@ -31,6 +31,8 @@ const CTable __code Commands[] = {
   {0,{'S','L','E','E','P','#','#','#','#'},cmdActivate},  // activate Sleeping mode - one shot or sleep until interrupt
 */
 
+// TODO: Clean up init functions
+
 void LLAPSerial::init()
 {
 	sMessage.reserve(10);
@@ -46,6 +48,15 @@ void LLAPSerial::init(char* dID)
 	bMsgReceived = false;
 	setDeviceId(dID);
 	cMessage[12]=0;		// ensure terminated
+}
+
+void LLAPSerial::init(HardwareSerial *serIn )
+{
+	sMessage.reserve(10);
+	bMsgReceived = false;
+	deviceId[0] = '-';
+	deviceId[1] = '-';
+	_Serial = serIn;
 }
 
 void LLAPSerial::processMessage(){
