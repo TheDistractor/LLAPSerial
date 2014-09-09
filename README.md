@@ -1,3 +1,6 @@
+** This is my customised version of the Ciseco LLAP Arduino library. **
+Original Readme:
+
 This Arduino library is under development, however feel free to try it out.
 
 It is designed to assist the user in implementing a LLAP device using the Arduino development environment.
